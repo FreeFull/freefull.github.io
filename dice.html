@@ -49,7 +49,7 @@ Only the 1d50 rolls are considered.
 
     function display_rolls() {
         resultbox.value = "";
-        var re = /.*: (.+) rolls 1d50: (\d+)$/;
+        var re = / *([^:\[\]]+) rolls 1d50: (\d+)$/;
         var results = [];
         for (var line of entrybox.value.split('\n')) {
             var match = line.match(re);
