@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Dice roll sorter</title>
+<style>
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.flex-item {
+    width: 50%;
+}
+textarea {
+    width: 95%;
+    height: 30em;
+}
+</style>
+</head>
+
+<body>
+<div class="flex-container">
+    <div class="flex-item">
+        Paste rolls here:
+        <textarea id="entrybox"></textarea>
+    </div>
+    <div class="flex-item">
+        Output:
+        <textarea id="resultbox" readonly="true"></textarea>
+    </div>
+</div>
+
+<button id="asc_button">Ascending</button>
+<button id="desc_button">Descending</button>
+<br/>
+Only the 1d50 rolls are considered.
+
+<noscript>This page won't work without Javascript enabled.</noscript>
+<script>
+(function() {
+    var $ = document.querySelectorAll.bind(document);
+    var entrybox = $("#entrybox")[0];
+    var resultbox = $("#resultbox")[0];
+    var asc_button = $("#asc_button")[0];
+    var desc_button = $("#desc_button")[0];
+    var ascending = false;
+
+    function display_rolls() {
+        resultbox.value = "";
+        var re = /.*System: (.+) rolls 1d50: (\d+)$/;
+        var results = [];
+        for (var line of entrybox.value.split('\n')) {
+            var match = line.match(re);
+            if (match !== null) {
+                results.push({ value: parseInt(match[2], 10), name: match[1] });
+            }
+        }
+        results.sort((a,b) => {
+            if (ascending) {
+                return a.value - b.value;
+            } else {
+                return b.value - a.value;
+            }
+        });
+        for (var result of results) {
+            resultbox.value += `${result.name} rolled: ${result.value}\n`;
+        }
+    }
+
+    entrybox.oninput = display_rolls;
+
+    asc_button.onclick = () => {
+        ascending = true;
+        display_rolls();
+    }
+
+    desc_button.onclick = () => {
+        ascending = false;
+        display_rolls();
+    }
+
+    display_rolls();
+})();
+</script>
+
+</body>
+
+</html>
